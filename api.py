@@ -12,17 +12,17 @@ YOUR_API_KEY = ""       # you need to fill this in
 #    but store them in ENV variables, or files outside the project directory
 
 
-headers = {'Authorization': 'Token '+YOUR_API_KEY}
-params = {'format': 'json'}
+headers = {'Authorization': 'Token '+YOUR_API_KEY, 'Accept':'application/json'}
+
+s = requests.Session(headers=headers)
 
 # https://api.mindat.org/items/?format=json
 # return all mindat items (minerals, varieties, groups, synonyms, rocks, etc.),
 # unfiltered, paginated
 
 # Sending GET HTTP request with specified header & parameters
-response = requests.get(MINDAT_API_URL+"/items/",
-                        params=params,
-                        headers=headers)
+response = s.get(MINDAT_API_URL+"/items/")
+
 print(response)                            #Expected output: >>>  <Response [200]>
 print(response.json())
 
@@ -31,12 +31,9 @@ print(response.json())
 # selecting only necessary fields slightly reduces db queries size so its appreciated
 # customize page_size to 100 items per page
 params = {'fields': 'id,name,dispformulasimple',
-          'page_size': '100',
-          'format': 'json'}
+          'page_size': '100'}
 
-r = requests.get(MINDAT_API_URL+"/items/",
-                 params=params,
-                 headers=headers)
+r = s.get(MINDAT_API_URL+"/items/", params=params)
 
 # https://api.mindat.org/items/?omit=id,name,dispformulasimple
 # exclude fields from display
@@ -48,11 +45,8 @@ params = {'omit': 'id,name,dispformulasimple',
 params = {'density__to': '3',
           'crystal_system': 'Triclinic',
           'color': 'red',
-          'ima': 1,          # show only minerals approved by ima
-          'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/items/",
-                 params=params,
-                 headers=headers)
+          'ima': 1,          # show only minerals approved by ima}
+r = s.get(MINDAT_API_URL+"/items/", params=params)
 
 print(r)                            #Expected output: >>>  <Response [200]>
 print(r.json())
@@ -72,11 +66,8 @@ print(r.json())
 # relations - other relations between items
 # ! to enable relations field in items output add parameter:
 # https://api.mindat.org/items/?expand=relations
-params = {'expand': 'relations',
-          'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/items/",
-                 params=params,
-                 headers=headers)
+params = {'expand': 'relations'}
+r = s.get(MINDAT_API_URL+"/items/", params=params)
 
 
 # To list localities, where the mineral/item is present,
@@ -89,11 +80,9 @@ r = requests.get(MINDAT_API_URL+"/items/",
 # e.g., all varieties of Quartz (except parent, quartz itself):
 # https://api.mindat.org/items/3337/varieties/?fields=id,name,varietyof&page_size=1000
 params = {'fields': 'id,name,varietyof',
-          'page_size': '1000',
-          'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/items/3337/varieties/",
-                 params=params,
-                 headers=headers)
+          'page_size': '1000'}
+r = s.get(MINDAT_API_URL+"/items/3337/varieties/",
+                 params=params)
 
 
 # https://api.mindat.org/items_search/?q=raelgard
@@ -104,19 +93,14 @@ r = requests.get(MINDAT_API_URL+"/items/3337/varieties/",
 #        Query parameters:
 #           q (search term),
 #           size (number of returned records, applicable only for levenshtein search results, default 12)
-params = {'q': 'raelgard',
-          'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/items_search/",
-                 params=params,
-                 headers=headers)
+params = {'q': 'raelgard'}
+r = s.get(MINDAT_API_URL+"/items_search/",
+                 params=params)
 
 
 # https://api.mindat.org/minerals_ima/
 # Endpoint returning IMA related data and IMA-approved minerals only
-params = {'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/minerals_ima/",
-                 params=params,
-                 headers=headers)
+r = s.get(MINDAT_API_URL+"/minerals_ima/")
 
 print(r)                            #Expected output: >>>  <Response [200]>
 print(r.json())
@@ -129,11 +113,9 @@ print(r.json())
 # add 'expand=items' query parameter
 # https://api.mindat.org/localities/?expand=items&fields=id,name,items
 params = {'expand': 'items',
-          'fields': 'id,name,items',
-          'format': 'json'}
-r = requests.get(MINDAT_API_URL+"/minerals_ima/",
-                 params=params,
-                 headers=headers)
+          'fields': 'id,name,items'}
+r = s.get(MINDAT_API_URL+"/minerals_ima/",
+                 params=params)
 
 
 # There is automatically generated documentation for MindatAPI in OpenAPI3 format:
