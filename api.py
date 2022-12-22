@@ -37,15 +37,14 @@ r = s.get(MINDAT_API_URL+"/items/", params=params)
 
 # https://api.mindat.org/items/?omit=id,name,dispformulasimple
 # exclude fields from display
-params = {'omit': 'id,name,dispformulasimple',
-          'format': 'json'}
+params = {'omit': 'id,name,dispformulasimple'}
 
 # filters on minerals, examples
 # https://api.mindat.org/items/?density__to=3&crystal_system=Triclinic&color=red&ima=1
 params = {'density__to': '3',
           'crystal_system': 'Triclinic',
           'color': 'red',
-          'ima': 1,          # show only minerals approved by ima}
+          'ima': 1}          # show only minerals approved by ima
 r = s.get(MINDAT_API_URL+"/items/", params=params)
 
 print(r)                            #Expected output: >>>  <Response [200]>
